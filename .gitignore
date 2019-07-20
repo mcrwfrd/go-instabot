@@ -9,6 +9,9 @@ local/
 key
 session
 
+# Config files
+config/
+
 # Log files
 *.log
 

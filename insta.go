@@ -183,9 +183,10 @@ func goThrough(images response.TagFeedsResponse) {
 		}
 
 		// Check if we should fetch new images for tag
-		if i >= limits["follow"] && i >= limits["like"] && i >= limits["comment"] {
-			break
-		}
+		// Commenting this out because caused too many "image already liked" warnings on tags with less activity
+		// if i >= limits["follow"] && i >= limits["like"] && i >= limits["comment"] {
+		// 	break
+		// }
 
 		// Getting the user info
 		// Instagram will return a 500 sometimes, so we will retry 10 times.
@@ -200,11 +201,10 @@ func goThrough(images response.TagFeedsResponse) {
 		poster := posterInfo.User
 		followerCount := poster.FollowerCount
 
-		buildLine()
+		
 
 		log.Println("Checking followers for " + poster.Username + " - for #" + tag)
 		log.Printf("%s has %d followers\n", poster.Username, followerCount)
-		i++
 
 		// Will only follow and comment if we like the picture
 		like := followerCount > likeLowerLimit && followerCount < likeUpperLimit && numLiked < limits["like"]
@@ -233,8 +233,12 @@ func goThrough(images response.TagFeedsResponse) {
 				if comment {
 					commentImage(image)
 				}
+				i++
 			}
 		}
+
+		buildLine()
+
 		log.Printf("%s done\n\n", poster.Username)
 
 		// This is to avoid the temporary ban by Instagram
