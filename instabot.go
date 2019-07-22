@@ -5,6 +5,8 @@ func main() {
 	parseOptions()
 	// Gets the config
 	getConfig()
+	// Sends script starting notification if enabled in command line options
+	sendStartMail()
 	// Tries to login
 	login()
 	if *unfollow {

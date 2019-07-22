@@ -18,6 +18,9 @@ import (
 var dev *bool
 
 // Whether we want an email to be sent when the script ends / crashes
+var startmail *bool
+
+// Whether we want an email to be sent when the script ends / crashes
 var nomail *bool
 
 // Whether we want to launch the unfollow mode
@@ -76,6 +79,7 @@ func check(err error) {
 func parseOptions() {
 	run = flag.Bool("run", false, "Use this option to follow, like and comment")
 	unfollow = flag.Bool("sync", false, "Use this option to unfollow those who are not following back")
+	startmail = flag.Bool("startmail", false, "Use this option to enable an email notifciation when script begins : seful when in crontab") 
 	nomail = flag.Bool("nomail", false, "Use this option to disable the email notifications")
 	dev = flag.Bool("dev", false, "Use this option to use the script in development mode : nothing will be done for real")
 	logs := flag.Bool("logs", false, "Use this option to enable the logfile")
@@ -172,6 +176,14 @@ func send(body string, success bool) {
 		}
 
 		log.Print("sent")
+	}
+}
+
+// Sends an email at the beginning of the script to notify that it has begun. Used when job is in crontab
+func sendStartMail() {
+	if *startmail {
+		log.Print("sending script initialization email")
+		send("The instabot is now running", true)
 	}
 }
 
