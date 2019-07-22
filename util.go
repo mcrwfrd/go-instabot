@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/smtp"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -97,9 +98,15 @@ func parseOptions() {
 
 // Gets the conf in the config file
 func getConfig() {
-	folder := "config"
+	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	folder := dir + "/config"
 	if *dev {
-		folder = "local"
+		folder = dir + "/local"
 	}
 	viper.SetConfigFile(folder + "/config.json")
 
