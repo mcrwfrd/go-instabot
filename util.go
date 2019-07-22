@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/smtp"
 	"os"
-	"path/filepath"
 	"strings"
 	"time"
 
@@ -102,11 +101,7 @@ func parseOptions() {
 
 // Gets the conf in the config file
 func getConfig() {
-	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
-	
-	if err != nil {
-		log.Fatal(err)
-	}
+	dir := "$GOPATH/src/github.com/mcrwfrd/go-instabot"
 
 	folder := dir + "/config"
 	if *dev {
@@ -182,7 +177,7 @@ func send(body string, success bool) {
 // Sends an email at the beginning of the script to notify that it has begun. Used when job is in crontab
 func sendStartMail() {
 	if *startmail {
-		log.Print("sending script initialization email")
+		log.Print("sending script initialization")
 		send("The instabot is now running", true)
 	}
 }
