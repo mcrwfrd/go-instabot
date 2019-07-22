@@ -101,7 +101,7 @@ func parseOptions() {
 
 // Gets the conf in the config file
 func getConfig() {
-	gopath = os.Getenv("GOPATH")
+	gopath := os.Getenv("GOPATH")
 	dir := gopath + "/src/github.com/mcrwfrd/go-instabot"
 
 	folder := dir + "/config"
