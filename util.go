@@ -63,6 +63,7 @@ var report map[line]int
 // Counters that will be incremented while we like, comment, and follow
 var numFollowed int
 var numLiked int
+var numAlreadyLiked int
 var numCommented int
 
 // Will hold the tag value

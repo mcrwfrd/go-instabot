@@ -136,6 +136,7 @@ func loopTags() {
 		// What we did so far
 		numFollowed = 0
 		numLiked = 0
+		numAlreadyLiked = 0
 		numCommented = 0
 
 		browse()
@@ -147,6 +148,12 @@ func loopTags() {
 func browse() {
 	var i = 0
 	for numFollowed < limits["follow"] || numLiked < limits["like"] || numCommented < limits["comment"] {
+
+		// Exit the loop if too many images are already liked by the account before the bot reaches them
+		if numAlreadyLiked >= viper.GetInt("limits.maxAlreadyLiked") {
+			break
+		}
+
 		log.Println("Fetching the list of images for #" + tag + "\n")
 		i++
 
@@ -174,7 +181,13 @@ func goThrough(images response.TagFeedsResponse) {
 	var i = 1
 	for _, image := range images.FeedsResponse.Items {
 		// Exiting the loop if there is nothing left to do
+
 		if numFollowed >= limits["follow"] && numLiked >= limits["like"] && numCommented >= limits["comment"] {
+			break
+		}
+
+		// Exit the loop if too many images are already liked by the account before the bot reaches them
+		if numAlreadyLiked >= viper.GetInt("limits.maxAlreadyLiked") {
 			break
 		}
 
@@ -182,12 +195,6 @@ func goThrough(images response.TagFeedsResponse) {
 		if image.User.Username == viper.GetString("user.instagram.username") {
 			continue
 		}
-
-		// Check if we should fetch new images for tag
-		// Commenting this out because caused too many "image already liked" warnings on tags with less activity
-		// if i >= limits["follow"] && i >= limits["like"] && i >= limits["comment"] {
-		// 	break
-		// }
 
 		// Getting the user info
 		// Instagram will return a 500 sometimes, so we will retry 10 times.
@@ -201,8 +208,6 @@ func goThrough(images response.TagFeedsResponse) {
 
 		poster := posterInfo.User
 		followerCount := poster.FollowerCount
-
-		
 
 		log.Println("Checking followers for " + poster.Username + " - for #" + tag)
 		log.Printf("%s has %d followers\n", poster.Username, followerCount)
@@ -243,7 +248,7 @@ func goThrough(images response.TagFeedsResponse) {
 		log.Printf("%s done\n\n", poster.Username)
 
 		// This is to avoid the temporary ban by Instagram
-		waitRandomInterval(20, 40)
+		waitRandomInterval(5, 10)
 	}
 }
 
@@ -251,6 +256,7 @@ func goThrough(images response.TagFeedsResponse) {
 func likeImage(image response.MediaItemResponse) {
 	log.Println("Liking the picture")
 	if !image.HasLiked {
+		numAlreadyLiked = 0
 		if !*dev {
 			_, err := insta.Like(image.ID)
 			check(err)
@@ -259,6 +265,7 @@ func likeImage(image response.MediaItemResponse) {
 		numLiked++
 		report[line{tag, "like"}]++
 	} else {
+		numAlreadyLiked++
 		log.Println("Image already liked")
 	}
 }
