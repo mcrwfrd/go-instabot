@@ -248,7 +248,7 @@ func goThrough(images response.TagFeedsResponse) {
 		log.Printf("%s done\n\n", poster.Username)
 
 		// This is to avoid the temporary ban by Instagram
-		waitRandomInterval(5, 10)
+		waitRandomInterval(20, 40)
 	}
 }
 
