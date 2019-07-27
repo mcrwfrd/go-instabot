@@ -51,7 +51,7 @@ func syncFollowers() {
 		if !*dev {
 			insta.UnFollow(user.ID)
 		}
-		time.Sleep(6 * time.Second)
+		waitRandomInterval(6, 12)
 	}
 }
 
@@ -125,7 +125,6 @@ func createKey() []byte {
 
 // Go through all the tags in the list
 func loopTags() {
-	fmt.Println(insta)
 	for tag = range tagsList {
 		limitsConf := viper.GetStringMap("tags." + tag)
 		// Some converting
@@ -244,7 +243,7 @@ func goThrough(images response.TagFeedsResponse) {
 		log.Printf("%s done\n\n", poster.Username)
 
 		// This is to avoid the temporary ban by Instagram
-		time.Sleep(20 * time.Second)
+		waitRandomInterval(20, 40)
 	}
 }
 

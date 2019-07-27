@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math/rand"
 	"net/smtp"
 	"os"
 	"strings"
@@ -238,4 +239,12 @@ func buildReport() {
 
 	// Sends the report to the email in the config file, if the option is enabled
 	send(reportAsString, true)
+}
+
+func waitRandomInterval(min int, max int) {
+	rand.Seed(time.Now().Unix())
+	wait := rand.Intn(max-min) + min
+	log.Printf("Waiting %d seconds...\n\n", wait)
+	time.Sleep(time.Duration(wait) * time.Second)
+	return
 }
