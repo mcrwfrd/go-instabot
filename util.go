@@ -72,6 +72,7 @@ var tag string
 // check will log.Fatal if err is an error
 func check(err error) {
 	if err != nil {
+		send(fmt.Sprintf("A fatal error occurred:\n%s", err), false)
 		log.Fatal("ERROR:", err)
 	}
 }
