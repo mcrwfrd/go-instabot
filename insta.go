@@ -77,6 +77,7 @@ func contains(slice []response.User, user response.User) bool {
 // Logins and saves the session
 func createAndSaveSession() {
 	insta = goinsta.New(viper.GetString("user.instagram.username"), viper.GetString("user.instagram.password"))
+	
 	err := insta.Login()
 	check(err)
 
@@ -124,6 +125,7 @@ func createKey() []byte {
 
 // Go through all the tags in the list
 func loopTags() {
+	fmt.Println(insta)
 	for tag = range tagsList {
 		limitsConf := viper.GetStringMap("tags." + tag)
 		// Some converting
@@ -251,7 +253,8 @@ func likeImage(image response.MediaItemResponse) {
 	log.Println("Liking the picture")
 	if !image.HasLiked {
 		if !*dev {
-			insta.Like(image.ID)
+			_, err := insta.Like(image.ID)
+			check(err)
 		}
 		log.Println("Liked")
 		numLiked++
